@@ -110,7 +110,7 @@ public class HomePieceOfFurniture extends HomeObject implements PieceOfFurniture
     SORTABLE_PROPERTY_COMPARATORS.put(SortableProperty.VOLUME, new Comparator<HomePieceOfFurniture>() {
       @Override
       public int compare(HomePieceOfFurniture o1, HomePieceOfFurniture o2) {
-        return HomePieceOfFurniture.compare(o1.volume, o2.volume);
+        return HomePieceOfFurniture.compare(o1.getVolume(), o2.getVolume());
       }
     });
     SORTABLE_PROPERTY_COMPARATORS.put(SortableProperty.MOVABLE, new Comparator<HomePieceOfFurniture>() {
@@ -599,7 +599,7 @@ public class HomePieceOfFurniture extends HomeObject implements PieceOfFurniture
   /**
    * Returns the volume of this piece of furniture.
    */
-  public float getVolume() {return this.volume;}
+  public float getVolume() {return this.width * this.depth * this.height;}
 
   /**
    * Returns the elevation of the bottom of this piece of furniture on its level. 
