@@ -383,11 +383,22 @@ public class HomePrintableComponent extends JComponent implements Printable {
       try {
         int pageIndex = page - this.furniturePageCount;
         for (Level level: home.getLevels()) {
+          if (!level.isViewable()) {
+            continue;
+          }
           home.setSelectedLevel(level);
 
           int levelPageCount = 0;
-          while (((Printable) planView).print(g2D.create(), pageFormat, levelPageCount) == PAGE_EXISTS) {
-            levelPageCount++;
+          BufferedImage dummyImage = new BufferedImage(
+                  1, 1, BufferedImage.TYPE_INT_RGB);
+          Graphics2D dummyGraphics = dummyImage.createGraphics();
+          try {
+            while (((Printable) planView).print(
+                    dummyGraphics, pageFormat, levelPageCount) == PAGE_EXISTS) {
+              levelPageCount++;
+            }
+          } finally {
+            dummyGraphics.dispose();
           }
 
           if (pageIndex < levelPageCount) {
