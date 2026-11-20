@@ -376,46 +376,17 @@ public class HomePrintableComponent extends JComponent implements Printable {
         this.furniturePageCount++;
       }
     }
-    if (pageExists == NO_SUCH_PAGE 
-        && planView != null 
-        && (homePrint == null || homePrint.isPlanPrinted())) {
-      Level originalLevel = home.getSelectedLevel();
-      try {
-        int pageIndex = page - this.furniturePageCount;
-        for (Level level: home.getLevels()) {
-          if (!level.isViewable()) {
-            continue;
-          }
-          home.setSelectedLevel(level);
+    if (pageExists == NO_SUCH_PAGE
+            && planView != null
+            && (homePrint == null || homePrint.isPlanPrinted())) {
 
-          int levelPageCount = 0;
-          BufferedImage dummyImage = new BufferedImage(
-                  1, 1, BufferedImage.TYPE_INT_RGB);
-          Graphics2D dummyGraphics = dummyImage.createGraphics();
-          try {
-            while (((Printable) planView).print(
-                    dummyGraphics, pageFormat, levelPageCount) == PAGE_EXISTS) {
-              levelPageCount++;
-            }
-          } finally {
-            dummyGraphics.dispose();
-          }
+      pageExists = ((Printable)planView).print(
+              g2D, pageFormat, page - this.furniturePageCount);
 
-          if (pageIndex < levelPageCount) {
-            // Try to print next plan view page
-            pageExists = ((Printable)planView).print(g2D, pageFormat, pageIndex);
-            if (pageExists == PAGE_EXISTS
-                    && !this.printablePages.contains(page)) {
-              this.printablePages.add(page);
-              this.planPageCount++;
-            }
-            break;
-          } else {
-            pageIndex -= levelPageCount;
-          }
-        }
-      } finally {
-        home.setSelectedLevel(originalLevel);
+      if (pageExists == PAGE_EXISTS
+              && !this.printablePages.contains(page)) {
+        this.printablePages.add(page);
+        this.planPageCount++;
       }
     }
     View view3D = this.controller.getHomeController3D().getView();
